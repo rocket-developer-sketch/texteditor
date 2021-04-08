@@ -36,7 +36,7 @@ public class TextEditorController {
 	
 	@GetMapping("/open")
 	public String toTextEditor(Model model) {
-		
+		textEditorService.emptyStack();
 		model.addAttribute("textList", titleArray);
 		
 		return "/textEditor/textEditor";
@@ -47,6 +47,7 @@ public class TextEditorController {
 			@RequestParam("title") String title, @RequestParam("content") String content) {
 		
 		titleArray = textEditorService.saveText(title, content);
+		textEditorService.emptyStack();
 		
 		return "redirect:./open";
 		
@@ -78,7 +79,6 @@ public class TextEditorController {
 
 	@PostMapping("/undo.ajax")
 	public @ResponseBody Map<String, Object> undo(@RequestBody Map<String, Object> param) {
-
 		String lastText = param.get("lastText").toString();
 		Map<String, Object> result = new HashMap<String, Object>();
 		

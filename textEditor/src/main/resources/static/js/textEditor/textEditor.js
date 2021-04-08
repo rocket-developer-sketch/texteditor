@@ -6,7 +6,6 @@ let titleList = document.getElementById("titleList");
 
 resetBtn.onclick = function() {
 	let title = document.getElementById("title");
-	let content = document.getElementById("content");
 	title.value = " ";
 	content.value = " ";
 	title.focus;
@@ -16,12 +15,9 @@ content.addEventListener('keydown', function(key) {
 	if (key.keyCode == 13) {
 		let row = content.value.split('\n').length;
 		let maxRow = 20;
-		var contentText = content.value;
-		
-		
 
 		if (row < maxRow) {
-			ajaxSaveOneLine(contentText);
+			ajaxSaveOneLine();
 		}
 		else if (row > maxRow) {
 			alert('20줄 까지만 가능합니다.');
@@ -32,20 +28,20 @@ content.addEventListener('keydown', function(key) {
 
 })// 엔터이벤트 닫음
 
-function ajaxSaveOneLine(contentText) {
+function ajaxSaveOneLine() {
 	let lastText = getLastText();
-	
+
 	var json = {
 		"content": lastText
 	}
+
 	$.ajax({
 		type: "GET",
 		url: "./textValue.ajax",
 		data: json,
 		contentType: "application/json",
 		success: function() {
-			console.log("sucess")
-			// 현재 데이터 받을 생각 없음.06.30
+			console.log("ENTER SAVE sucess");
 		}
 	});// ajax닫힘
 }
@@ -55,16 +51,27 @@ function calRowLength(content) {
 	let array = content.val().split('\n');
 }
 
-function getLastText(){
-	let contentText = content.value;
+function getLastText() {
+	let contentText = document.getElementById("content").value;
 	let textSplitByEnter = contentText.split("\n");
 	let contentLength = textSplitByEnter.length;
-	let lastText = textSplitByEnter[contentLength - 1];
-	
+	let lastText = "";
+	if (contentLength > 1) { // 첫 번째 줄이 아닌 경우
+		lastText = textSplitByEnter[contentLength - 1] == "" ? textSplitByEnter[contentLength - 2] : textSplitByEnter[contentLength - 1]; // 공백이라면, 공백 앞 줄이 lastText
+	} else if (contentLength <= 1) { // 첫 번째 줄 인 경우
+		lastText = textSplitByEnter[contentLength - 1];
+	}
+
 	return lastText;
 }
 
 undoBtn.onclick = function() {
+	
+	if (document.getElementById("content").value == "") {
+		alert("빈 칸입니다.");
+		return false;
+	}
+	
 	let lastText = getLastText();
 
 	let json = {
@@ -78,14 +85,14 @@ undoBtn.onclick = function() {
 		contentType: "application/json",
 		dataType: "json",
 		success: function(data) {
-			if (data.result == "OK") {
-				if (contentLength > 1) {
-					content.value = content.value.replace("\n" + lastText, "");
-				}
-				else if (contentLength == 1) {
-					content.value = "";
-					//undoBtn.disabled = true;					
-				}
+			var text = document.getElementById("content");
+			if (data.result == lastText) {
+				/* 
+					에러:
+						마지막 줄에 동일한 문자열 패턴이 있다면 동일한 문자열 패턴이 모두 사라짐
+				*/
+				var index = text.value.indexOf("\n"+lastText);
+				text.value = text.value.substring(0, index)			
 			}
 		}
 	}); // ajax닫힘

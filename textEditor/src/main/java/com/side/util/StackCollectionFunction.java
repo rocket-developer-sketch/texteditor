@@ -11,6 +11,10 @@ public class StackCollectionFunction {
 		this.array = new String[size];
 	}
 	
+	public int size() {
+		return top;
+	}
+	
 	public String push(String item) {
 		if (top == array.length - 1) {
 			throw new StackOverflowError("오버플로우");

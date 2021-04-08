@@ -9,7 +9,6 @@ import com.google.gson.JsonObject;
 import com.side.texteditor.DTO.TextEditorDTO;
 import com.side.util.StackCollectionFunction;
 
-
 @Service
 public class TextEditorService {
 	int count = 0;
@@ -17,50 +16,54 @@ public class TextEditorService {
 	String[] titleArray = new String[] {};
 
 	StackCollectionFunction interStorage = new StackCollectionFunction(20);
+	StackCollectionFunction dynamicStorage = new StackCollectionFunction(20);
 	String[] enterLineText = new String[] {};
 	int inputStringLength = 0;
 
 	String[] tempUndoText = new String[] {};
 	int cnt = 1;
 
-	
-	public String[] saveText(String title, String content) {
-		
-		titleArray = new String[count+1];
-		for (int i = 0; i < titleArray.length; i++) {
-			TextEditorDTOArray[titleArray.length-1] = new TextEditorDTO(title, content);
-			titleArray[i] = TextEditorDTOArray[i].getTitle();
+	public void emptyStack() {
+		if (interStorage.size() > 0) {
+			for(int i = 0; i < interStorage.size(); i++) {
+				interStorage.pop();
+			}
 		}
-		
-		count++;
-	
-		return titleArray;
-	
+		if (dynamicStorage.size() > 0) {
+			for(int i = 0; i < dynamicStorage.size(); i++) {
+				dynamicStorage.pop();
+			}
+		}
 	}
 	
-	public void enterLine(String intermediateStorage) {
-		/*
-		inputStringLength = intermediateStorage.split("\n").length;
-		enterLineText = new String[inputStringLength];
-		enterLineText = intermediateStorage.split("\n");
-		if (enterLineText[inputStringLength - 1].equals("")) {
-			return;
-		} else {
-			interStorage.push(enterLineText[inputStringLength - 1]);
+	public String[] saveText(String title, String content) {
+
+		titleArray = new String[count + 1];
+		for (int i = 0; i < titleArray.length; i++) {
+			TextEditorDTOArray[titleArray.length - 1] = new TextEditorDTO(title, content);
+			titleArray[i] = TextEditorDTOArray[i].getTitle();
 		}
-		*/
-		
+
+		count++;
+
+		return titleArray;
+
+	}
+
+	public void enterLine(String intermediateStorage) {
 		if (intermediateStorage.equals("")) {
 			return;
 		} else {
-			interStorage.push(intermediateStorage);
+			if (interStorage.size() < 19) {
+				interStorage.push(intermediateStorage);
+			}
 		}
 	};
-	
+
 	public TextEditorDTO showText(Integer index) {
-	
+
 		TextEditorDTO textEditorDTO = null;
-				
+
 		if (index != null) {
 			textEditorDTO = new TextEditorDTO(TextEditorDTOArray[index].getTitle(),
 					TextEditorDTOArray[index].getContent());
@@ -69,62 +72,40 @@ public class TextEditorService {
 		return textEditorDTO;
 
 	};
-	
+
 	public String undo(String lastText) {
-		String textSave = "";
-
 		try {
-			if(lastText.equals("")) {
-				return "";
-			} else {
-				interStorage.push(lastText);
-				textSave = "OK";
+			if (interStorage.peek().equals(lastText)) {
+				interStorage.pop();
 			}
-
 		} catch (EmptyStackException e) {
-			
-				textSave = "NO";
-				
-				return textSave;
-
+			System.out.println("ENTER 로 저장 된 데이터 없음");
 		}
 
-		return textSave;
+		if (dynamicStorage.isEmpty() || dynamicStorage.peek().equals(lastText) == false) { // 가장 위에 있는 값이 방금 undo
+																							// 한 값과 같은 지 검사
+			dynamicStorage.push(lastText);
+		}
+
+		return lastText;
 	};
-	
+
 	public String redo() {
-		
 		Gson gson = new Gson();
 		JsonObject jsonObject = new JsonObject();
-		String redoString = null;
-		int tempUndoTextLength = tempUndoText.length;
-		
-		redoString = interStorage.push(tempUndoText[tempUndoTextLength - 1]);
-		
-		tempUndoText[tempUndoText.length - 1] = redoString;
+		// String redoString = null;
+		// int tempUndoTextLength = tempUndoText.length;
 
+		// redoString = dynamicStorage.push(tempUndoText[tempUndoTextLength - 1]);
+		// tempUndoText[tempUndoText.length - 1] = redoString;
+		// redoString = dynamicStorage.pop();
 
-		
-		
-//		for (int i = cnt; i <= tempUndoTextLength - 1; i++) {
-//			System.out.println("?쒖븞?吏");
-//			tempUndoText[i - 1] = tempUndoText[i];
-//			System.out.println("吏?쒌꽩?? "+tempUndoText[i - 1]);
-//			System.out.println("吏?쒌꽩?담뀋?밤꽩?뱁썑: "+tempUndoText[i]);
-//		}
-//		
-//		tempUndoTextLength--;
-//		System.out.println("類닿퀬?쒗썑: "+tempUndoTextLength);
-//		tempUndoText[tempUndoTextLength] = null;
-//		
-//		tempUndoText[tempUndoTextLength - 1] = redoString;
-
-		jsonObject.addProperty("redoString", tempUndoText[tempUndoText.length - 1]);
+		// jsonObject.addProperty("redoString", tempUndoText[tempUndoText.length - 1]);
+		interStorage.push(dynamicStorage.peek());
+		jsonObject.addProperty("redoString", dynamicStorage.pop());
 		String json = gson.toJson(jsonObject);
-		
+
 		return json;
 	}
 
-
-	
 }
