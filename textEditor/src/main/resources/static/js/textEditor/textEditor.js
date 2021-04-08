@@ -99,15 +99,15 @@ undoBtn.onclick = function() {
 
 }// undo 닫음
 
-//redoBtn.onclick = function() {
-//	let Param = "redo";
-//	$.ajax({
-//		type : "GET",
-//		url : "./doAction.ajax?doAction=" + Param,
-//		data : content,
-//		dataType : "json",
-//		success : function(data) {
-//			console.log("redp한 줄",data.redoString);
-//		}
-//	}); // ajax닫힘
-//}// redo 닫음
+redoBtn.onclick = function() {
+	$.ajax({
+		type : "GET",
+		url : "/textEditor/redo.ajax",
+		dataType : "json",
+		success : function(data) {
+			console.log(data);
+			var text = document.getElementById("content");
+			text.value = text.value + "\n" + data.result;
+		}
+	}); // ajax닫힘
+}// redo 닫음

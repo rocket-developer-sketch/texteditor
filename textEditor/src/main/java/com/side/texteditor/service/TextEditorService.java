@@ -11,19 +11,18 @@ import com.side.util.StackCollectionFunction;
 
 @Service
 public class TextEditorService {
+	
 	int count = 0;
+	
 	TextEditorDTO[] TextEditorDTOArray = new TextEditorDTO[20];
 	String[] titleArray = new String[] {};
 
 	StackCollectionFunction interStorage = new StackCollectionFunction(20);
 	StackCollectionFunction dynamicStorage = new StackCollectionFunction(20);
-	String[] enterLineText = new String[] {};
-	int inputStringLength = 0;
 
-	String[] tempUndoText = new String[] {};
-	int cnt = 1;
-
+	
 	public void emptyStack() {
+		
 		if (interStorage.size() > 0) {
 			for(int i = 0; i < interStorage.size(); i++) {
 				interStorage.pop();
@@ -35,6 +34,7 @@ public class TextEditorService {
 			}
 		}
 	}
+	
 	
 	public String[] saveText(String title, String content) {
 
@@ -49,8 +49,10 @@ public class TextEditorService {
 		return titleArray;
 
 	}
+	
 
 	public void enterLine(String intermediateStorage) {
+		
 		if (intermediateStorage.equals("")) {
 			return;
 		} else {
@@ -60,6 +62,7 @@ public class TextEditorService {
 		}
 	};
 
+	
 	public TextEditorDTO showText(Integer index) {
 
 		TextEditorDTO textEditorDTO = null;
@@ -73,7 +76,9 @@ public class TextEditorService {
 
 	};
 
+	
 	public String undo(String lastText) {
+		
 		try {
 			if (interStorage.peek().equals(lastText)) {
 				interStorage.pop();
@@ -89,23 +94,16 @@ public class TextEditorService {
 
 		return lastText;
 	};
+	
 
 	public String redo() {
-		Gson gson = new Gson();
-		JsonObject jsonObject = new JsonObject();
-		// String redoString = null;
-		// int tempUndoTextLength = tempUndoText.length;
-
-		// redoString = dynamicStorage.push(tempUndoText[tempUndoTextLength - 1]);
-		// tempUndoText[tempUndoText.length - 1] = redoString;
-		// redoString = dynamicStorage.pop();
-
-		// jsonObject.addProperty("redoString", tempUndoText[tempUndoText.length - 1]);
-		interStorage.push(dynamicStorage.peek());
-		jsonObject.addProperty("redoString", dynamicStorage.pop());
-		String json = gson.toJson(jsonObject);
-
-		return json;
+		
+		if (dynamicStorage.isEmpty() == false) {
+			interStorage.push(dynamicStorage.peek());
+			return dynamicStorage.pop();
+		}
+		
+		return "";
 	}
 
 }
