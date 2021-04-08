@@ -74,11 +74,13 @@ public class TextEditorController {
 	
 	@GetMapping("/textValue.ajax")
 	public @ResponseBody void intermediateStorage(@RequestParam("content") String intermediateStorage) {
+		
 		textEditorService.enterLine(intermediateStorage);
 	}
 
 	@PostMapping("/undo.ajax")
 	public @ResponseBody Map<String, Object> undo(@RequestBody Map<String, Object> param) {
+		
 		String lastText = param.get("lastText").toString();
 		Map<String, Object> result = new HashMap<String, Object>();
 		
@@ -88,6 +90,15 @@ public class TextEditorController {
 
 		return result;
 	}
-
+	
+	@GetMapping("/redo.ajax")
+	public @ResponseBody Map<String, Object> redo() {
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		result.put("result", textEditorService.redo());
+		
+		return result;
+	}
 }
 
