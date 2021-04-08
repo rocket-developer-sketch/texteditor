@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<title>textEditor</title>
+<link th:href="@{/static/css/textEditor/textEditor.css}" rel="stylesheet" />
+</head>
+<body>
+	<div class="wrap">
+		<div>
+			<p>텍스트 에디터 구현</p>
+			<form action="/textEditor/saveContent" class="formWrap" method="POST">
+				<div class="innerWrap">
+					<div class="inputContent content">
+						<div class="boxline">
+							<div class="bitTitleInput">
+								<input type="text" name="title" id="title"
+									th:value="${textEditorDTO!=null}?${textEditorDTO.title}:' '" />
+							</div>
+							<div class="boxline textContentArea">
+								<textarea name="content" id="content" cols="30" rows="10"
+									th:text="${textEditorDTO!=null}?${textEditorDTO.content}:' '"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="listContent content">
+						<div class="boxline titleListBox bigTitleList">제목리스트</div>
+						<div class="boxline titleListBox">
+							<ul th:if="${textList != null}">
+								<li  th:each="titleList,iterStat : ${textList}">
+<!-- 									<a th:href="@{../textEditor/showtext(index=${titleListStat.index})}"> -->
+<!-- 										<span th:text="${titleList.title}"></span> -->
+
+									<a th:href="@{../textEditor/showContent(index=${iterStat.index})}">
+										<span th:id="'titleList'+${iterStat.index}" th:text="${titleList}"></span>
+									</a>
+<!-- 								</a> -->
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="btnWrap">
+					<input type="submit" value="save Button" class="btn" />
+					<button type="button" class="btn" id="resetBtn">reset Button</button>
+					<button type="button" class="btn" id="undoBtn">undo Button</button>
+					<button type="button" class="btn" id="redoBtn">redo Button</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script th:src="@{/static/js/textEditor/textEditor.js}"></script>
+
+</html>
