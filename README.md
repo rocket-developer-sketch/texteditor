@@ -2,41 +2,61 @@
 JAVA, SPRINGBOOT, MAVEN TEXTEDITOR TO STUDY STACK
 
 ## Repository 생성 이유
+> This is a simple text editor side project I created to get hands-on experience with the stack data structure.
+> The frontend doesn't store any data — everything is saved on the server.
+> The project was built without considering server load, focusing instead on becoming more familiar with stacks.
+> 
 > STACK 구조를 사용해보고 싶어 만든 간단한 텍스트 에디터 사이드 프로젝트입니다.
 > 프론트엔드에서 자료를 저장하지 않고, 모든 자료는 서버에서만 저장합니다.
-> 서버 부하를 고려하지 않은 stack 과 친숙해 지기 위해 만든 프로젝트 입니다.  
+> 서버 부하를 고려하지 않은 stack 과 친숙해 지기 위해 만든 프로젝트 입니다.
+
 --------------------------------------------------------------------------------------------------
 
-## 주요 파일 구조
-+ textEditor : 프로젝트
-  + src : 소스코드
-    + main/java/com/side : java 파일
+## 주요 파일 구조 ( Project Structure )
++ textEditor :
+  + src :
+    + main/java/com/side :
       + /textEditor/DTO 
-        + TextEditorDTO : 텍스트에디터 Data Transfer Object 
+        + TextEditorDTO : text editor data transfer object 
       + /controller
-        + IndexController.java : 첫 시작 화면 redirect
-        + TextEditorController.java : 응답 처리
+        + IndexController.java : redirect to home
+        + TextEditorController.java : processing response
       + /service
-        + TextEditorService : 텍스트에디터 로직 처리
+        + TextEditorService : logic
     + main/resources
-      + application.properties : 리소스 파일(css, js 파일) 경로 지정
+      + application.properties : environment file
     + main/resources/static
-      + css/textEditor : css 파일
-      + js/textEditor : javascript 파일
+      + css/textEditor : css files
+      + js/textEditor : javascript files
     + main/resources/templates
-      + index.html : 첫 시작 화면 html 파일
-      + /textEditor : 텍스트 에디터 html 파일
+      + index.html : home html
+      + /textEditor : text editor html
   
 --------------------------------------------------------------------------------------------------
 
-## 주요 기능
+## 주요 기능 ( Main features )
   save : 작성한 메모 저장
   reset : 작성 글 초기화
   undo : 작성 중인 마지막 줄 제거
   redo : 가장 최신에 제거한 줄 불러오기
   
 ---------------------------------------------------------------------------------------------------
-## 에러 2021-04-08
+## 알려진 이슈 2021-04-08 ( Known issues )
+Known Issue:
+  When the last input line is repeated with the same pattern, all matching lines are deleted.
+  Example:
+  ```
+    Line 1  
+    Line 2  
+    3  
+    (Enter)  
+    3  
+    (Enter)  
+    3  
+    (Enter)
+   ```
+   In this case, all six lines following the repeated "3 (Enter)" pattern are removed.
+   
   마지막 작성 줄이 같은 패턴으로 반복 될 시, 모두 삭제 됨  
   예시] 
   ```
@@ -50,15 +70,5 @@ JAVA, SPRINGBOOT, MAVEN TEXTEDITOR TO STUDY STACK
   (엔터)
   ```
   3(엔터) 패턴인 총 6줄이 삭제 됨
+
   
----------------------------------------------------------------------------------------------------
-
-## 또 다른 REPOSITORY
-[개발자로서 기록]  
-개발에 관련된 공부를 기록하는 REPOSITORY 입니다.  
-https://github.com/rocket-developer-sketch/ajansim/  
-
-[알고리즘 문제 모음]  
-마주쳤던 알고리즘 문제과 그 풀이들을 모아놓은 REPOSITORY  
-https://github.com/rocket-developer-sketch/algorithmQuestions/tree/main/AlgorithmQuestions
-
